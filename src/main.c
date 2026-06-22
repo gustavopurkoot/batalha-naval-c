@@ -31,23 +31,51 @@ void inicializarTabuleiro(int tabuleiro[TAMANHO][TAMANHO])
 void posicionarNavios(int tabuleiro[TAMANHO][TAMANHO])
 {
     int tamanhosNavios[5] = {5, 4, 3, 3, 2};
-    int quantidadeNavios = sizeof(tamanhosNavios) / sizeof(tamanhosNavios[0]); 
+    int quantidadeNavios = sizeof(tamanhosNavios) / sizeof(tamanhosNavios[0]);
 
-    for(int i = 0; i <quantidadeNavios; i++){
+    for (int i = 0; i < quantidadeNavios; i++)
+    {
         int linha, coluna;
         char orientacao;
+        int valido;
 
-        printf("Digite a linha para o navio de tamanho %d: ", tamanhosNavios[i]);
-        scanf("%d", &linha);
+        do
+        {
+            valido = 1;
 
-        printf("Digite a coluna para o navio de tamanho %d: ", tamanhosNavios[i]);
-        scanf("%d", &coluna);
+            printf("Digite a linha para o navio de tamanho %d: ", tamanhosNavios[i]);
+            scanf("%d", &linha);
 
-        printf("Digite a orientação (H para horizontal, V para vertical): ");
-        scanf(" %c", &orientacao);
+            printf("Digite a coluna para o navio de tamanho %d: ", tamanhosNavios[i]);
+            scanf("%d", &coluna);
+
+            printf("Digite a orientação (H para horizontal, V para vertical): ");
+            scanf(" %c", &orientacao);
+
+            if (orientacao == 'H')
+            {
+                if (coluna + tamanhosNavios[i] > TAMANHO)
+                {
+                    printf("ERRO: Navio ultrapassa tabuleiro!\n");
+                    valido = 0;
+                }
+            }
+            else if (orientacao == 'V')
+            {
+                if (linha + tamanhosNavios[i] > TAMANHO)
+                {
+                    printf("ERRO: Navio ultrapassa tabuleiro!\n");
+                    valido = 0;
+                }
+            }
+            else
+            {
+                printf("Opção Inválida!");
+                valido = 0;
+            }
+        } while (!valido);
     }
 }
-
 
 int main()
 {
@@ -63,7 +91,6 @@ int main()
     inicializarTabuleiro(tirosJogador2);
 
     imprimirtabuleiro(tabuleiroJogador1);
-    
 
     return 0;
 }
