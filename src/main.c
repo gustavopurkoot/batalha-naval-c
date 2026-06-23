@@ -123,8 +123,65 @@ void posicionarNavios(int tabuleiro[TAMANHO][TAMANHO])
     }
 }
 
+int processarTiro(int tabuleiroNavios[TAMANHO][TAMANHO], int tabuleiroTiros[TAMANHO][TAMANHO], int linha, int coluna)
+{
+
+    if (tabuleiroNavios[linha][coluna] == NAVIO)
+    {
+        tabuleiroTiros[linha][coluna] = TIRO_ACERTO;
+        return 1;
+    }
+    else
+    {
+        tabuleiroTiros[linha][coluna] = TIRO_AGUA;
+        return 0;
+    }
+}
+
+void lerTiro(int tabuleiroTiros[TAMANHO][TAMANHO], int *linha, int *coluna)
+{
+    int valido;
+
+    do
+    {
+        valido = 1;
+
+        printf("Digite linha e coluna do tiro: ");
+        scanf("%d %d", linha, coluna);
+
+        if (*linha < 0 || *linha >= TAMANHO || *coluna < 0 || *coluna >= TAMANHO)
+        {
+            printf("ERRO: Posição fora do tabuleiro!\n");
+            valido = 0;
+        }
+        else if (tabuleiroTiros[*linha][*coluna] != AGUA)
+        {
+            printf("ERRO: Você já atirou nessa posição!\n");
+            valido = 0;
+        }
+    } while (!valido);
+}
+
+int aindaTemNavios(int tabuleiro[TAMANHO][TAMANHO])
+{
+    for (int i = 0; i < TAMANHO; i++)
+    {
+        for (int j = 0; j < TAMANHO; j++)
+        {
+            if (tabuleiro[i][j] == NAVIO)
+            {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
 int main()
 {
+    int linha, coluna;
+    int resultado;
+
     int tabuleiroJogador1[TAMANHO][TAMANHO];
     int tirosJogador1[TAMANHO][TAMANHO];
 
@@ -144,7 +201,43 @@ int main()
     posicionarNavios(tabuleiroJogador2);
     imprimirtabuleiro(tabuleiroJogador2);
 
-    
+    do
+    {
+        printf("JOGADOR 1:\n\n");
+        imprimirtabuleiro(tirosJogador1);
+        lerTiro(tirosJogador1, &linha, &coluna);
+
+        resultado = processarTiro(tabuleiroJogador2, tirosJogador1, linha, coluna);
+
+        if (resultado)
+            printf("Acertou!\n");
+        else
+            printf("Água!\n");
+
+        if (!aindaTemNavios(tabuleiroJogador2))
+        {
+            printf("Jogador 1 venceu!\n");
+            break;
+        }
+
+        printf("JOGADOR 2:\n\n");
+        imprimirtabuleiro(tirosJogador2);
+        lerTiro(tirosJogador2, &linha, &coluna);
+
+        resultado = processarTiro(tabuleiroJogador1, tirosJogador2, linha, coluna);
+
+        if (resultado)
+            printf("Acertou!\n");
+        else
+            printf("Água!\n");
+
+        if (!aindaTemNavios(tabuleiroJogador1))
+        {
+            printf("Jogador 2 venceu!\n");
+            break;
+        }
+
+    } while (1);
 
     return 0;
 }
