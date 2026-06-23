@@ -132,6 +132,7 @@ int processarTiro(int tabuleiroNavios[TAMANHO][TAMANHO], int tabuleiroTiros[TAMA
 
     if (tabuleiroNavios[linha][coluna] == NAVIO)
     {
+        tabuleiroNavios[linha][coluna] = TIRO_ACERTO;
         tabuleiroTiros[linha][coluna] = TIRO_ACERTO;
         return 1;
     }
