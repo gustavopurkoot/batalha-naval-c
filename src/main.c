@@ -84,6 +84,8 @@ void posicionarNavios(int tabuleiro[TAMANHO][TAMANHO])
                     for (int k = 0; k < tamanhosNavios[i]; k++)
                     {
                         tabuleiro[linha + k][coluna] = NAVIO;
+                        printf("------------------------------\n");
+                        imprimirtabuleiro(tabuleiro);
                     }
                 }
             }
@@ -111,6 +113,8 @@ void posicionarNavios(int tabuleiro[TAMANHO][TAMANHO])
                     for (int k = 0; k < tamanhosNavios[i]; k++)
                     {
                         tabuleiro[linha][coluna + k] = NAVIO;
+                        printf("------------------------------\n");
+                        imprimirtabuleiro(tabuleiro);
                     }
                 }
             }
@@ -195,11 +199,9 @@ int main()
 
     imprimirtabuleiro(tabuleiroJogador1);
     posicionarNavios(tabuleiroJogador1);
-    imprimirtabuleiro(tabuleiroJogador1);
 
     imprimirtabuleiro(tabuleiroJogador2);
     posicionarNavios(tabuleiroJogador2);
-    imprimirtabuleiro(tabuleiroJogador2);
 
     do
     {
