@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
 #define TAMANHO 10
 #define AGUA 0
 #define NAVIO 1
@@ -127,6 +130,83 @@ void posicionarNavios(int tabuleiro[TAMANHO][TAMANHO])
     }
 }
 
+void posicionarNaviosCPU(int tabuleiro[TAMANHO][TAMANHO])
+{
+    int tamanhosNavios[5] = {5, 4, 3, 3, 2};
+    int quantidadeNavios = sizeof(tamanhosNavios) / sizeof(tamanhosNavios[0]);
+
+    for (int i = 0; i < quantidadeNavios; i++)
+    {
+        int linha, coluna;
+        char orientacao;
+        int valido;
+
+        do
+        {
+            valido = 1;
+
+            linha = rand() % TAMANHO;
+            coluna = rand() % TAMANHO;
+            orientacao = (rand() % 2 == 0) ? 'V' : 'H';
+
+            if (orientacao == 'V')
+            {
+                if (linha + tamanhosNavios[i] > TAMANHO)
+                {
+                    valido = 0;
+                }
+                if (valido)
+                {
+                    for (int k = 0; k < tamanhosNavios[i]; k++)
+                    {
+                        if (tabuleiro[linha + k][coluna] == NAVIO)
+                        {
+                            valido = 0;
+                            break;
+                        }
+                    }
+                }
+                if (valido)
+                {
+                    for (int k = 0; k < tamanhosNavios[i]; k++)
+                    {
+                        tabuleiro[linha + k][coluna] = NAVIO;
+                    }
+                }
+            }
+            else if (orientacao == 'H')
+            {
+                if (coluna + tamanhosNavios[i] > TAMANHO)
+                {
+                    valido = 0;
+                }
+                if (valido)
+                {
+                    for (int k = 0; k < tamanhosNavios[i]; k++)
+                    {
+                        if (tabuleiro[linha][coluna + k] == NAVIO)
+                        {
+                            valido = 0;
+                            break;
+                        }
+                    }
+                }
+                if (valido)
+                {
+                    for (int k = 0; k < tamanhosNavios[i]; k++)
+                    {
+                        tabuleiro[linha][coluna + k] = NAVIO;
+                    }
+                }
+            }
+            else
+            {
+                valido = 0;
+            }
+        } while (!valido);
+    }
+}
+
 int processarTiro(int tabuleiroNavios[TAMANHO][TAMANHO], int tabuleiroTiros[TAMANHO][TAMANHO], int linha, int coluna)
 {
 
@@ -152,9 +232,17 @@ void lerTiro(int tabuleiroTiros[TAMANHO][TAMANHO], int *linha, int *coluna)
         valido = 1;
 
         printf("Digite linha e coluna do tiro: ");
-        scanf("%d %d", linha, coluna);
+        int lidos = scanf("%d %d", linha, coluna);
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
 
-        if (*linha < 0 || *linha >= TAMANHO || *coluna < 0 || *coluna >= TAMANHO)
+        if (lidos != 2)
+        {
+            printf("ERRO: Entrada inválida!\n");
+            valido = 0;
+        }
+        else if (*linha < 0 || *linha >= TAMANHO || *coluna < 0 || *coluna >= TAMANHO)
         {
             printf("ERRO: Posição fora do tabuleiro!\n");
             valido = 0;
@@ -165,6 +253,15 @@ void lerTiro(int tabuleiroTiros[TAMANHO][TAMANHO], int *linha, int *coluna)
             valido = 0;
         }
     } while (!valido);
+}
+
+void tiroCPU(int tabuleiroTiros[TAMANHO][TAMANHO], int *linha, int *coluna)
+{
+    do
+    {
+        *linha = rand() % TAMANHO;
+        *coluna = rand() % TAMANHO;
+    } while (tabuleiroTiros[*linha][*coluna] != AGUA);
 }
 
 int aindaTemNavios(int tabuleiro[TAMANHO][TAMANHO])
@@ -187,6 +284,8 @@ int main()
     int linha, coluna;
     int resultado;
 
+    srand(time(NULL));
+
     int tabuleiroJogador1[TAMANHO][TAMANHO];
     int tirosJogador1[TAMANHO][TAMANHO];
 
@@ -201,8 +300,7 @@ int main()
     imprimirtabuleiro(tabuleiroJogador1);
     posicionarNavios(tabuleiroJogador1);
 
-    imprimirtabuleiro(tabuleiroJogador2);
-    posicionarNavios(tabuleiroJogador2);
+    posicionarNaviosCPU(tabuleiroJogador2);
 
     do
     {
@@ -223,9 +321,8 @@ int main()
             break;
         }
 
-        printf("JOGADOR 2:\n\n");
-        imprimirtabuleiro(tirosJogador2);
-        lerTiro(tirosJogador2, &linha, &coluna);
+        printf("Vez da CPU...\n\n");
+        tiroCPU(tirosJogador2, &linha, &coluna);
 
         resultado = processarTiro(tabuleiroJogador1, tirosJogador2, linha, coluna);
 
